@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Laba</string>
+    <string name="title_activity_navig">Navig</string>
+    <string name="title_home">Список книг</string>
+    <string name="title_dashboard">Выбранная книга</string>
+    <string name="title_notifications">Избранные книги</string>
+
+    <string-array name="book_titles">
+        <item>Война и мир</item>
+        <item>Преступление и наказание</item>
+        <item>1984</item>
+        <item>Убить пересмешника</item>
+        <item>Мастер и Маргарита</item>
+        <item>Алхимик</item>
+        <item>Гордость и предубеждение</item>
+        <item>Тень горы</item>
+        <item>Унесенные ветром</item>
+        <item>Великий Гэтсби</item>
+        <item>Моби Дик</item>
+        <item>Три товарища</item>
+        <item>На дороге</item>
+        <item>Старик и море</item>
+        <item>Прекрасный новый мир</item>
+        <item>Сиддхартха</item>
+        <item>Мировая литература</item>
+        <item>451 градус по Фаренгейту</item>
+        <item>Книжный вор</item>
+        <item>Сказки на ночь</item>
+    </string-array>
+
+
+</resources>
