@@ -9,15 +9,21 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import java.util.*;
 
+import com.example.laba.code.interfaces.FetchBooksTask;
 import com.example.laba.code.interfaces.OnBookClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BookListFragment extends Fragment implements OnBookClickListener {
 
@@ -42,6 +48,29 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_books);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                //Background work here
+                new FetchBooksTask().GetBookInfo();
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //UI Thread work here
+                    }
+                });
+            }
+        });
+
+
+
 
         String[] bookTitles = getResources().getStringArray(R.array.book_titles);
 
