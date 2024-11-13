@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.laba.Book;
+import com.example.laba.R;
 import com.example.laba.databinding.FragmentDashboardBinding;
 
 public class DashboardFragment extends Fragment {
@@ -29,7 +30,12 @@ public class DashboardFragment extends Fragment {
             book.author = args.getString("book_author");
             book.publicationDate = args.getString("book_publicationDate");
             book.genre = args.getString("book_genre");
-            //book.genre = (int)(args.getString("book_rating"));
+            String bookRating = args.getString("book_rating");
+            if (bookRating != null)
+            {
+                book.rating = Integer.parseInt(bookRating);
+            }
+
 
             /*
             bundle.putString("book_name", book.name);
@@ -45,11 +51,24 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
+        final TextView textView = binding.textViewName;
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
-        final TextView name = binding.textDashboard..findViewById(R.id.text_view_book_title);
-        name.setText(book.name);
+        if (args != null)
+        {
+            final TextView authorT = binding.textViewAuthor;
+            dashboardViewModel.author().observe(getViewLifecycleOwner(), authorT::setText);
+
+            final TextView genre = binding.textViewGenre;
+            dashboardViewModel.genre().observe(getViewLifecycleOwner(), genre::setText);
+
+            final TextView PublicationDate = binding.textViewPublicationDate;
+            dashboardViewModel.publicationDate().observe(getViewLifecycleOwner(), PublicationDate::setText);
+
+            final TextView rating = binding.textViewRating;
+            dashboardViewModel.rating().observe(getViewLifecycleOwner(), rating::setText);
+        }
+
         return root;
     }
 
