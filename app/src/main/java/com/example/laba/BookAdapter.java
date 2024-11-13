@@ -13,11 +13,11 @@ import com.example.laba.code.interfaces.OnBookClickListener;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
-    private String[] bookTitles;
+    private Book[] books;
     private final OnBookClickListener listener;
 
-    public BookAdapter(String[] bookTitles, OnBookClickListener listener) {
-        this.bookTitles = bookTitles;
+    public BookAdapter(Book[] bookTitles, OnBookClickListener listener) {
+        this.books = bookTitles;
         this.listener = listener;
     }
 
@@ -30,29 +30,32 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
-        holder.bind(bookTitles[position], listener);
+        holder.bind(books[position], listener);
     }
 
     @Override
     public int getItemCount() {
-        return bookTitles.length; // > 7 ? 7 : bookTitles.length; // Отображаем до 7 элементов
+        return books.length; // > 7 ? 7 : bookTitles.length; // Отображаем до 7 элементов
     }
 
     static class BookViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
+        private TextView authorView;
 
         public BookViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.text_view_book_title);
+            authorView = itemView.findViewById(R.id.text_view_book_author);
         }
 
-        public void bind(String title, final OnBookClickListener listener) {
-            textView.setText(title);
+        public void bind(Book book, final OnBookClickListener listener) {
+            textView.setText(book.name);
+            authorView.setText(book.author);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onBookClick(title);
+                    listener.onBookClick(book);
                 }
             });
         }

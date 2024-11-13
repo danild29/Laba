@@ -2,6 +2,8 @@ package com.example.laba.code.interfaces;
 
 import android.util.Log;
 
+import com.example.laba.Book;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,21 +12,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class Book
-{
-    public String author;
-    public String genre;
-    public String name;
-    public String publicationDate;
-    public int rating;
-}
+
 
 
 public class FetchBooksTask {
     private static final String TAG = "FetchBooksTask";
     private static final String JSON_URL = "https://raw.githubusercontent.com/Lpirskaya/JsonLab/master/Books2022.json";
 
-    public void GetBookInfo() {
+    public Book[] GetBookInfo() {
         JSONArray jsonArray = null;
         try {
             URL url = new URL(JSON_URL);
@@ -40,16 +35,18 @@ public class FetchBooksTask {
 
                 // Парсим JSON
                 jsonArray = new JSONArray(jsonStringBuilder.toString());
-                ParseJson(jsonArray);
+                return ParseJson(jsonArray);
             } finally {
                 urlConnection.disconnect();
             }
         } catch (Exception e) {
             Log.e(TAG, "Error fetching data", e);
         }
+
+        return new Book[0];
     }
 
-    private void ParseJson(JSONArray jsonArray) {
+    private Book[] ParseJson(JSONArray jsonArray) {
         if (jsonArray != null) {
             try {
 
@@ -79,11 +76,15 @@ public class FetchBooksTask {
                     Log.d(TAG, "publicationDate: " + book.publicationDate);
                     Log.d(TAG, "rating: " + book.rating);
                 }
+                return books;
             } catch (Exception e) {
                 Log.e(TAG, "Error parsing JSON", e);
             }
         } else {
             Log.e(TAG, "No data received from API");
         }
+
+
+        return new Book[0];
     }
 }

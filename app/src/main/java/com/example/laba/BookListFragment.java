@@ -32,10 +32,14 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
     private List<String> books;
 
     @Override
-    public void onBookClick(String book) {
+    public void onBookClick(Book book) {
 
         Bundle bundle = new Bundle();
-        bundle.putString("bookName", book);
+        bundle.putString("book_name", book.name);
+        bundle.putString("book_genre", book.genre);
+        bundle.putString("book_author", book.author);
+        bundle.putString("book_publicationDate", book.publicationDate);
+        bundle.putString("book_rating", String.valueOf(book.rating));
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_navig);
 
         navController.popBackStack();
@@ -49,6 +53,7 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_books);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        OnBookClickListener context = this;
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -58,11 +63,17 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
             public void run() {
 
                 //Background work here
-                new FetchBooksTask().GetBookInfo();
+                Book[] books = new FetchBooksTask().GetBookInfo();
 
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+
+                        //String[] bookTitles = getResources().getStringArray(R.array.book_titles);
+
+                        //Arrays.sort(bookTitles);
+                        BookAdapter adapter = new BookAdapter(books, context);
+                        recyclerView.setAdapter(adapter);
                         //UI Thread work here
                     }
                 });
@@ -72,11 +83,6 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
 
 
-        String[] bookTitles = getResources().getStringArray(R.array.book_titles);
-
-        Arrays.sort(bookTitles);
-        BookAdapter adapter = new BookAdapter(bookTitles, this);
-        recyclerView.setAdapter(adapter);
 
         return view;
     }
