@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.util.*;
 
+import com.example.laba.Room.AppDatabase;
 import com.example.laba.code.interfaces.FetchBooksTask;
 import com.example.laba.code.interfaces.OnBookClickListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -57,6 +58,7 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
+        AppDatabase db = AppDatabase.getDatabase(getActivity());
 
         executor.execute(new Runnable() {
             @Override
@@ -64,6 +66,13 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
                 //Background work here
                 Book[] books = new FetchBooksTask().GetBookInfo();
+
+                for (int i = 0; i < books.length; i++) {
+                    db.bookDao().insert(books[i]);
+
+                }
+                List<User> users = db.userDao().getAllUsers();
+                List<Book> booksdb = db.bookDao().getAllBooks();
 
                 handler.post(new Runnable() {
                     @Override

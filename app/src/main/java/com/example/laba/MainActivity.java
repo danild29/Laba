@@ -14,31 +14,37 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.laba.Room.AppDatabase;
+
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    private boolean checkPasswrod(String p)
+    public void fillUsers(AppDatabase db)
     {
-        return true;
-//        String[] passwords = {"123", "qwe", "zxc", "1234567", "gh12"};
-//        for (String str : passwords) {
-//            if (str.equals(p)) {
-//                return true;
-//            }
-//        }
-//        return false;
+        User user1 = new User("user1", "pass1");
+        User user2 = new User("user2", "pass2");
+        User user3 = new User("user3", "pass3");
+        User user4 = new User("user4", "pass4");
+        User user5 = new User("user5", "pass5");
+
+        db.userDao().insert(user1);
+        db.userDao().insert(user2);
+        db.userDao().insert(user3);
+        db.userDao().insert(user4);
+        db.userDao().insert(user5);
     }
 
-
-    private boolean checkEmail(String p)
+    private boolean checkPasswrod(String e, String p)
     {
-        return true;
-//        String[] passwords = {"123@gmail.com", "qwe@gmail.com", "zxc@gmail.com", "1234567@gmail.com", "123"};
-//        for (String str : passwords) {
-//            if (str.equals(p)) {
-//                return true;
-//            }
-//        }
-//        return false;
+        AppDatabase db = AppDatabase.getDatabase(context);
+        List<User> users = db.userDao().getAllUsers();
+        for (User u : users) {
+            if (u.getLogin().equals(e) && u.getPassword().equals(p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     MainActivity context;
@@ -54,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         context = this;
+        AppDatabase db = AppDatabase.getDatabase(context);
 
+        //fillUsers(db);
+        fillFavourites(db);
         Button btn = findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 String e = email.getText().toString();
                 Log.e(p, e);
 
-                if (checkPasswrod(p) && checkEmail(e))
+                if (checkPasswrod(e, p))
                 {
                     Intent intent = new Intent(context, Navig.class);
                     startActivity(intent);
@@ -77,5 +86,15 @@ public class MainActivity extends AppCompatActivity {
                     email.setTextColor(Color.RED);
                 }
         }});
+    }
+
+    public  void fillFavourites(AppDatabase db)
+    {
+        // Заполнение таблицы избранных книг (например, для первого пользователя)
+        FavoriteBook favorite1 = new FavoriteBook(1, 1); // userId = 1, bookId = 1
+        FavoriteBook favorite2 = new FavoriteBook(1, 2); // userId = 1, bookId = 2
+
+        db.favoriteBookDao().insert(favorite1);
+        db.favoriteBookDao().insert(favorite2);
     }
 }
