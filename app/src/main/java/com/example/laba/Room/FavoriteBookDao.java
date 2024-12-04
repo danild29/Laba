@@ -15,4 +15,13 @@ public interface FavoriteBookDao {
 
     @Query("SELECT * FROM favorite_books WHERE userId = :userId")
     List<FavoriteBook> getFavoriteBooksForUser(int userId);
+
+    @Query("SELECT * FROM favorite_books")
+    List<FavoriteBook> getFavoriteBooks();
+
+    @Query("DELETE FROM favorite_books")
+    void deleteFavoriteBooks();
+
+    @Query("SELECT * FROM favorite_books WHERE userId = :userId and bookId = :bookId")
+    boolean containsFavoriteBooks(int userId, int bookId);
 }

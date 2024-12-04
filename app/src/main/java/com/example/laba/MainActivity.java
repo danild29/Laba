@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.room.Database;
 
 import com.example.laba.Room.AppDatabase;
+import com.example.laba.Room.FavoriteBookDao;
 
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         List<User> users = db.userDao().getAllUsers();
         for (User u : users) {
             if (u.getLogin().equals(e) && u.getPassword().equals(p)) {
+                AppDatabase.UserId = u.getId();
                 return true;
             }
         }
@@ -62,8 +65,15 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         AppDatabase db = AppDatabase.getDatabase(context);
 
-        //fillUsers(db);
-        fillFavourites(db);
+//        db.userDao().deleteAllUsers();
+//        db.favoriteBookDao().deleteFavoriteBooks();
+//        fillUsers(db);
+//        List<User> users = db.userDao().getAllUsers();
+//        int userId = users.get(0).getId();
+//        List<FavoriteBook> favoriteBooks1 = db.favoriteBookDao().getFavoriteBooks();
+//        fillFavourites(db, userId);
+//        List<FavoriteBook> favoriteBooks2 = db.favoriteBookDao().getFavoriteBooks();
+
         Button btn = findViewById(R.id.button);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
         }});
     }
 
-    public  void fillFavourites(AppDatabase db)
+    public  void fillFavourites(AppDatabase db, int userId)
     {
         // Заполнение таблицы избранных книг (например, для первого пользователя)
-        FavoriteBook favorite1 = new FavoriteBook(1, 1); // userId = 1, bookId = 1
-        FavoriteBook favorite2 = new FavoriteBook(1, 2); // userId = 1, bookId = 2
+        FavoriteBook favorite1 = new FavoriteBook(userId, 1); // userId = 1, bookId = 1
+        FavoriteBook favorite2 = new FavoriteBook(userId, 2); // userId = 1, bookId = 2
 
         db.favoriteBookDao().insert(favorite1);
         db.favoriteBookDao().insert(favorite2);

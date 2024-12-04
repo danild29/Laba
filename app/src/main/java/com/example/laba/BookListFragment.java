@@ -2,8 +2,6 @@ package com.example.laba;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -15,12 +13,10 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import java.util.*;
 
 import com.example.laba.Room.AppDatabase;
 import com.example.laba.code.interfaces.FetchBooksTask;
 import com.example.laba.code.interfaces.OnBookClickListener;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -66,13 +62,17 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
                 //Background work here
                 Book[] books = new FetchBooksTask().GetBookInfo();
+                List<Book> booksdb = db.bookDao().getAllBooks();
 
                 for (int i = 0; i < books.length; i++) {
-                    db.bookDao().insert(books[i]);
 
+                    if (!contains(booksdb, books[i]))
+                    {
+                        db.bookDao().insert(books[i]);
+                    }
                 }
+
                 List<User> users = db.userDao().getAllUsers();
-                List<Book> booksdb = db.bookDao().getAllBooks();
 
                 handler.post(new Runnable() {
                     @Override
@@ -81,7 +81,7 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
                         //String[] bookTitles = getResources().getStringArray(R.array.book_titles);
 
                         //Arrays.sort(bookTitles);
-                        BookAdapter adapter = new BookAdapter(books, context);
+                        BookAdapter adapter = new BookAdapter(booksdb.toArray(new Book[0]), context);
                         recyclerView.setAdapter(adapter);
                         //UI Thread work here
                     }
@@ -94,5 +94,16 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
 
 
         return view;
+    }
+
+    public static boolean contains(List<Book> books, Book checkBook)
+    {
+        for (Book book: books) {
+            if (book.name.equals(checkBook.name))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

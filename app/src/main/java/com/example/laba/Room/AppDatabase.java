@@ -11,6 +11,9 @@ import com.example.laba.User;
 
 @Database(entities = {User.class, Book.class, FavoriteBook.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
+
+    public static int UserId;
+
     public abstract UserDao userDao();
     public abstract BookDao bookDao();
     public abstract FavoriteBookDao favoriteBookDao();

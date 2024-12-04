@@ -15,4 +15,7 @@ public interface BookDao {
 
     @Query("SELECT * FROM books")
     List<Book> getAllBooks();
+
+    @Query("DELETE FROM books")
+    void deleteAllBooks();
 }

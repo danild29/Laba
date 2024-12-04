@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AlertDialog;
+import android.util.Log;
 
+import com.example.laba.Room.AppDatabase;
 import com.example.laba.code.interfaces.OnBookClickListener;
-
+import android.content.Context;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
@@ -58,6 +61,33 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                     listener.onBookClick(book);
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showDialog(book, itemView.getContext());
+                    return true;
+                }
+            });
+        }
+
+        private void showDialog(final Book book, Context context) {
+            AppDatabase db = AppDatabase.getDatabase(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Выбор");
+            builder.setMessage("Вы хотите добавить '" + book.name + "' в избранное?");
+            builder.setPositiveButton("В избранное", (dialog, which) -> {
+
+                if (!db.favoriteBookDao().containsFavoriteBooks(AppDatabase.UserId, book.getId()))
+                {
+                    FavoriteBook fb = new FavoriteBook(AppDatabase.UserId, book.getId());
+                    db.favoriteBookDao().insert(fb);
+                }
+                Log.d("BookAdapter", "Книга добавлена в избранное: " + book.name);
+            });
+            builder.setNegativeButton("Отмена", (dialog, which) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
     }
 }
