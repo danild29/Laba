@@ -1,6 +1,11 @@
-package com.example.laba;
+package com.example.laba.ui.notifications;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -8,13 +13,12 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
+import com.example.laba.Book;
+import com.example.laba.BookAdapter;
+import com.example.laba.FavoriteBook;
+import com.example.laba.R;
 import com.example.laba.Room.AppDatabase;
+import com.example.laba.User;
 import com.example.laba.code.interfaces.FetchBooksTask;
 import com.example.laba.code.interfaces.OnBookClickListener;
 
@@ -22,7 +26,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BookListFragment extends Fragment implements OnBookClickListener {
+
+public class FavouriteBookListFragment extends Fragment implements OnBookClickListener {
 
 
     private BookAdapter bookAdapter;
@@ -60,19 +65,7 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
             @Override
             public void run() {
 
-                //Background work here
-                Book[] books = new FetchBooksTask().GetBookInfo();
-                List<Book> booksdb = db.bookDao().getAllBooks();
-
-                for (int i = 0; i < books.length; i++) {
-
-                    if (!contains(booksdb, books[i]))
-                    {
-                        db.bookDao().insert(books[i]);
-                    }
-                }
-
-                List<User> users = db.userDao().getAllUsers();
+                List<Book> booksdb = db.favoriteBookDao().getBooksForUser(AppDatabase.UserId);
 
                 handler.post(new Runnable() {
                     @Override
@@ -81,7 +74,7 @@ public class BookListFragment extends Fragment implements OnBookClickListener {
                         //String[] bookTitles = getResources().getStringArray(R.array.book_titles);
 
                         //Arrays.sort(bookTitles);
-                        BookAdapter adapter = new BookAdapter(booksdb.toArray(new Book[0]), context);
+                        FavouriteBookAdapter adapter = new FavouriteBookAdapter(booksdb.toArray(new Book[0]), context);
                         recyclerView.setAdapter(adapter);
                         //UI Thread work here
                     }
